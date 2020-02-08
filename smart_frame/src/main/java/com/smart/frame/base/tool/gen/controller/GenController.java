@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
-import com.smart.frame.common.utils.text.Convert;
+import com.smart.frame.common.core.text.Convert;
 import com.smart.frame.framework.web.controller.BaseController;
 import com.smart.frame.framework.web.domain.AjaxResult;
 import com.smart.frame.framework.web.page.TableDataInfo;

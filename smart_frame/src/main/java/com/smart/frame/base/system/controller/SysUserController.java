@@ -190,8 +190,7 @@ public class SysUserController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
-    public AjaxResult changeStatus(@RequestBody SysUser user)
-    {
+    public AjaxResult changeStatus(@RequestBody SysUser user) {
         userService.checkUserAllowed(user);
         user.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(userService.updateUserStatus(user));

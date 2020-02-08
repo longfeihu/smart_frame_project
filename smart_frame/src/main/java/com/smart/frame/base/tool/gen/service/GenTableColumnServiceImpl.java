@@ -2,7 +2,7 @@ package com.smart.frame.base.tool.gen.service;
 
 import java.util.List;
 
-import com.smart.frame.common.utils.text.Convert;
+import com.smart.frame.common.core.text.Convert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.smart.frame.base.tool.gen.domain.GenTableColumn;
