@@ -75,6 +75,14 @@
           v-hasPermi="['system:dict:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="info"
+          icon="el-icon-back"
+          size="mini"
+          @click="backDict"
+        >返回</el-button>
+      </el-col>
     </el-row>
 
     <el-table border v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
@@ -349,6 +357,10 @@ export default {
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});
+    },
+    /** 返回字典列表 */
+    backDict() {
+      this.$router.push({ path: '/system/dict'})
     }
   }
 };
