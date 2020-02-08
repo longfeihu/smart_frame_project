@@ -78,7 +78,7 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="tableList" @selection-change="handleSelectionChange">
+    <el-table border v-loading="loading" :data="tableList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column label="序号" align="center" prop="tableId" width="50px" />
       <el-table-column
@@ -86,14 +86,12 @@
         align="center"
         prop="tableName"
         :show-overflow-tooltip="true"
-        width="130"
       />
       <el-table-column
         label="表描述"
         align="center"
         prop="tableComment"
         :show-overflow-tooltip="true"
-        width="130"
       />
       <el-table-column
         label="实体"

@@ -77,7 +77,7 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
+    <el-table border v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="字典编码" align="center" prop="dictCode" />
       <el-table-column label="字典标签" align="center" prop="dictLabel" />

@@ -102,7 +102,7 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
+    <el-table border v-loading="loading" :data="list" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="日志编号" align="center" prop="operId" />
       <el-table-column label="系统模块" align="center" prop="title" />
