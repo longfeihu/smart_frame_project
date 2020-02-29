@@ -20,7 +20,7 @@ export function getJob(jobId) {
 // 新增定时任务调度
 export function addJob(data) {
   return request({
-    url: '/monitor/job',
+    url: '/monitor/job/add',
     method: 'post',
     data: data
   })
@@ -29,8 +29,8 @@ export function addJob(data) {
 // 修改定时任务调度
 export function updateJob(data) {
   return request({
-    url: '/monitor/job',
-    method: 'put',
+    url: '/monitor/job/edit',
+    method: 'post',
     data: data
   })
 }
@@ -73,6 +73,18 @@ export function runJob(jobId, jobGroup) {
   }
   return request({
     url: '/monitor/job/run',
+    method: 'post',
+    params: data
+  })
+}
+
+// 校验cron表达式是否有效
+export function checkCronExpression(cronExpression) {
+  const data = {
+    cronExpression
+  }
+  return request({
+    url: '/monitor/job/checkCronExpressionIsValid',
     method: 'post',
     params: data
   })

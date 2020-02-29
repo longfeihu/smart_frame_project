@@ -26,7 +26,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table
+    <el-table border
       v-loading="loading"
       :data="menuList"
       row-key="menuId"

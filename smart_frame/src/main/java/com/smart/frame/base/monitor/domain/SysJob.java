@@ -2,7 +2,8 @@ package com.smart.frame.base.monitor.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import com.smart.frame.base.monitor.util.CronUtils;
 import com.smart.frame.common.constant.ScheduleConstants;

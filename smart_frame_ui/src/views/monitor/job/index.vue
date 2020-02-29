@@ -75,7 +75,7 @@
       <el-table-column label="任务分组" align="center" prop="jobGroup" :formatter="jobGroupFormat"></el-table-column>
       <el-table-column label="调用目标字符串" align="center" prop="invokeTarget" />
       <el-table-column label="执行表达式" align="center" prop="cronExpression" />
-      <el-table-column label="状态" align="center">
+      <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"
@@ -115,24 +115,45 @@
     />
 
     <!-- 添加或修改定时任务调度对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="调用目标字符串" prop="invokeTarget">
-          <el-input v-model="form.invokeTarget" type="textarea" placeholder="请输入内容" />
+    <el-dialog :title="title" :visible.sync="open" width="800px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+        <el-form-item label="任务名称" prop="jobName">
+          <el-input v-model="form.jobName" type="input" placeholder="请输入任务名称" />
         </el-form-item>
-        <el-form-item label="cron执行表达式" prop="cronExpression">
+        <el-form-item label="任务分组" prop="jobGroup" label-width="140px">
+          <el-select v-model="form.jobGroup" placeholder="请选择">
+            <el-option v-for="item in jobGroupOptions" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="调用目标字符串" prop="invokeTarget" label-width="140px">
+          <el-input v-model="form.invokeTarget" placeholder="调用目标字符串" />
+            <span class="el-icon-warning" style="font-size:12px; color:red;"> Bean调用示例：ryTask.ryParams('ry') </span><br/>
+            <span class="el-icon-warning" style="font-size:12px; color:red;"> Class类调用示例：com.ruoyi.quartz.task.RyTask.ryParams('ry') </span><br/>
+            <span class="el-icon-warning" style="font-size:12px; color:red;"> 参数说明：支持字符串，布尔类型，长整型，浮点型，整型 </span>
+        </el-form-item>
+        <el-form-item label="cron执行表达式" prop="cronExpression" label-width="140px">
           <el-input v-model="form.cronExpression" placeholder="请输入cron执行表达式" />
         </el-form-item>
-        <el-form-item label="计划执行错误策略" prop="misfirePolicy">
-          <el-input v-model="form.misfirePolicy" placeholder="请输入计划执行错误策略" />
-        </el-form-item>
-        <el-form-item label="是否并发执行" prop="concurrent">
-          <el-input v-model="form.concurrent" placeholder="请输入是否并发执行" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-radio-group v-model="form.status">
-            <el-radio label="1">请选择字典生成</el-radio>
+        <el-form-item label="执行策略" prop="misfirePolicy" label-width="140px">
+          <el-radio-group v-model="form.misfirePolicy">
+            <el-radio label="1">立即执行</el-radio>
+            <el-radio label="2">执行一次</el-radio>
+            <el-radio label="3">放弃执行</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否并发执行" prop="concurrent" label-width="140px">
+          <el-radio-group v-model="form.concurrent">
+            <el-radio label="0">允许</el-radio>
+            <el-radio label="1">禁止</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="状态" prop="status" label-width="140px">
+          <el-radio-group v-model="form.status">
+            <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">{{dict.dictLabel}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark" label-width="140px">
+          <el-input v-model="form.remark" type="textarea" placeholder="请填写备注" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -191,7 +212,7 @@
 </template>
 
 <script>
-import { listJob, getJob, deleteJob, addJob, updateJob, exportJob, changeJobStatus, runJob } from "@/api/monitor/job";
+import { listJob, getJob, deleteJob, addJob, updateJob, exportJob, changeJobStatus, runJob, checkCronExpression } from "@/api/monitor/job";
 
 export default {
   data() {
@@ -218,6 +239,8 @@ export default {
       jobGroupOptions: [],
       // 任务状态
       statusOptions: [],
+      // cron表达式校验标识
+      cronFlag: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -230,9 +253,19 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        jobName: [
+          { required: true, message: "请填写任务名称", trigger: "blur" }
+        ],
+        jobGroup: [
+          { required: true, message: "请选择任务分组", trigger: "blur" }
+        ],
         invokeTarget: [
-          { required: true, message: "调用目标字符串不能为空", trigger: "blur" }
-        ],      }
+          { required: true, message: "请填写调用目标字符串", trigger: "blur" }
+        ],
+        cronExpression: [
+          { required: true, message: "请填写corn时间表达式", trigger: "blur" }
+        ]
+       }
     };
   },
   created() {
@@ -268,11 +301,11 @@ export default {
       this.form = {
         jobId: undefined,
         jobName: undefined,
-        jobGroup: undefined,
+        jobGroup: "DEFAULT",
         invokeTarget: undefined,
         cronExpression: undefined,
-        misfirePolicy: undefined,
-        concurrent: undefined,
+        misfirePolicy: "1",
+        concurrent: "1",
         status: "0",
         createBy: undefined,
         createTime: undefined,
@@ -303,7 +336,7 @@ export default {
       this.detail = true;
       this.form = row;
     },
-    // 用户状态修改
+    // 定时任务状态修改
     handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要"' + text + '""' + row.jobName + '"任务吗?', "警告", {
@@ -318,7 +351,7 @@ export default {
           row.status = row.status === "0" ? "1" : "0";
         });
     },
-    // 用户状态修改
+    // 执行任务
     handleRun(row) {
       this.$confirm('确认立即执行一次任务吗?', "警告", {
           confirmButtonText: "确定",
@@ -352,27 +385,35 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.jobId != undefined) {
-            updateJob(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
+          // 校验时间表达式
+          checkCronExpression(this.form.cronExpression).then(response => {
+            if (response.code == 200) {
+              // 校验成功
+              if (this.form.jobId != undefined) {
+                updateJob(this.form).then(response => {
+                  if (response.code === 200) {
+                    this.msgSuccess("修改成功");
+                    this.open = false;
+                    this.getList();
+                  } else {
+                    this.msgError(response.msg);
+                  }
+                });
               } else {
-                this.msgError(response.msg);
+                addJob(this.form).then(response => {
+                  if (response.code === 200) {
+                    this.msgSuccess("新增成功");
+                    this.open = false;
+                    this.getList();
+                  } else {
+                    this.msgError(response.msg);
+                  }
+                });
               }
-            });
-          } else {
-            addJob(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              } else {
-                this.msgError(response.msg);
-              }
-            });
-          }
+            } else {
+              this.msgError("时间表达式格式错误,请重新填写");
+            }
+          });
         }
       });
     },
@@ -402,6 +443,17 @@ export default {
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});
+    },
+    // 校验时间表达式
+    handleCronExpression (cronExpression) {
+      var that = this;
+      checkCronExpression(cronExpression).then(response => {
+        if (response.data) {
+          that.cronFlag = true
+        } else {
+          that.cronFlag = false
+        }
+      });
     }
   }
 };

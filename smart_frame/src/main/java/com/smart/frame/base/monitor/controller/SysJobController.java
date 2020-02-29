@@ -49,7 +49,7 @@ public class SysJobController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "定时任务", businessType = BusinessType.EXPORT)
+    @Log(title = "导出定时任务", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('monitor:job:export')")
     @PostMapping("/export")
     public AjaxResult export(SysJob job) {
@@ -58,7 +58,7 @@ public class SysJobController extends BaseController
         return util.exportExcel(list, "定时任务");
     }
 
-    @Log(title = "定时任务", businessType = BusinessType.DELETE)
+    @Log(title = "删除定时任务", businessType = BusinessType.DELETE)
     @PreAuthorize("@ss.hasPermi('monitor:job:remove')")
     @DeleteMapping("/remove/{jobIds}")
     public AjaxResult remove(@PathVariable Long[] jobIds) throws SchedulerException {
@@ -69,7 +69,7 @@ public class SysJobController extends BaseController
     /**
      * 任务调度状态修改
      */
-    @Log(title = "定时任务", businessType = BusinessType.UPDATE)
+    @Log(title = "修改定时任务状态", businessType = BusinessType.UPDATE)
     @PreAuthorize("@ss.hasPermi('monitor:job:changeStatus')")
     @PostMapping("/changeStatus")
     public AjaxResult changeStatus(SysJob job) throws SchedulerException {
@@ -81,7 +81,7 @@ public class SysJobController extends BaseController
     /**
      * 任务调度立即执行一次
      */
-    @Log(title = "定时任务", businessType = BusinessType.UPDATE)
+    @Log(title = "执行一次定时任务", businessType = BusinessType.UPDATE)
     @PreAuthorize("@ss.hasPermi('monitor:job:run')")
     @PostMapping("/run")
     public AjaxResult run(SysJob job) throws SchedulerException {
@@ -89,10 +89,16 @@ public class SysJobController extends BaseController
         return success();
     }
 
+    @PreAuthorize("@ss.hasPermi('monitor:job:query')")
+    @GetMapping(value = "/{jobId}")
+    public AjaxResult getJob (@PathVariable Long jobId) {
+        return AjaxResult.success(jobService.selectJobById(jobId));
+    }
+
     /**
      * 新增保存调度
      */
-    @Log(title = "定时任务", businessType = BusinessType.INSERT)
+    @Log(title = "新增定时任务", businessType = BusinessType.INSERT)
     @PreAuthorize("@ss.hasPermi('monitor:job:add')")
     @PostMapping("/add")
     public AjaxResult addSave(@Validated SysJob job) throws SchedulerException, TaskException {
@@ -102,7 +108,7 @@ public class SysJobController extends BaseController
     /**
      * 修改保存调度
      */
-    @Log(title = "定时任务", businessType = BusinessType.UPDATE)
+    @Log(title = "修改定时任务", businessType = BusinessType.UPDATE)
     @PreAuthorize("@ss.hasPermi('monitor:job:edit')")
     @PostMapping("/edit")
     public AjaxResult editSave(@Validated SysJob job) throws SchedulerException, TaskException {
@@ -114,12 +120,12 @@ public class SysJobController extends BaseController
      */
     @PostMapping("/checkCronExpressionIsValid")
     public AjaxResult checkCronExpressionIsValid(SysJob job) {
-
         Boolean checkFlag = jobService.checkCronExpressionIsValid(job.getCronExpression());
+        // 校验成功
         if (checkFlag) {
             return AjaxResult.success();
         } else {
-            return AjaxResult.error();
+            return AjaxResult.error("cron时间表达式格式错误");
         }
     }
 }

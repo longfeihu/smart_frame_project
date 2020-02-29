@@ -14,8 +14,11 @@ import com.smart.frame.workflow.dto.ActModelDto;
 import com.smart.frame.workflow.dto.ActTaskDto;
 import com.smart.frame.workflow.vo.ActTaskVO;
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfo;
 import org.activiti.engine.task.TaskQuery;
@@ -37,24 +40,20 @@ public class TaskController extends BaseController {
 
     @Autowired
     private RepositoryService repositoryService;
-
     @Autowired
     private RuntimeService runtimeService;
-
     @Autowired
     private IdentityService identityService;
-
     @Autowired
     private FormService formService;
-
     @Autowired
     private TaskService taskService;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private HistoryService historyService;
 
     @PreAuthorize("@ss.hasPermi('workflow:task:todo')")
     @GetMapping("/todoTasks")
