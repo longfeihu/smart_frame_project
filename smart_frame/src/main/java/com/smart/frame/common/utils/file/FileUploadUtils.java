@@ -10,7 +10,7 @@ import com.smart.frame.common.exception.file.InvalidExtensionException;
 import com.smart.frame.common.utils.DateUtils;
 import com.smart.frame.common.utils.StringUtils;
 import com.smart.frame.common.utils.security.Md5Utils;
-import com.smart.frame.framework.config.RuoYiConfig;
+import com.smart.frame.framework.config.SmartConfig;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +34,7 @@ public class FileUploadUtils
     /**
      * 默认上传的地址
      */
-    private static String defaultBaseDir = RuoYiConfig.getProfile();
+    private static String defaultBaseDir = SmartConfig.getProfile();
 
     private static int counter = 0;
 
@@ -147,7 +147,7 @@ public class FileUploadUtils
 
     private static final String getPathFileName(String uploadDir, String fileName) throws IOException
     {
-        int dirLastIndex = RuoYiConfig.getProfile().length() + 1;
+        int dirLastIndex = SmartConfig.getProfile().length() + 1;
         String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
         String pathFileName = Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
         return pathFileName;

@@ -23,7 +23,7 @@ import com.smart.frame.common.utils.StringUtils;
 import com.smart.frame.common.utils.reflect.ReflectUtils;
 import com.smart.frame.framework.aspectj.lang.annotation.Excel;
 import com.smart.frame.framework.aspectj.lang.annotation.Excels;
-import com.smart.frame.framework.config.RuoYiConfig;
+import com.smart.frame.framework.config.SmartConfig;
 import com.smart.frame.framework.web.domain.AjaxResult;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -679,7 +679,7 @@ public class ExcelUtil<T>
      */
     public String getAbsoluteFile(String filename)
     {
-        String downloadPath = RuoYiConfig.getDownloadPath() + filename;
+        String downloadPath = SmartConfig.getDownloadPath() + filename;
         File desc = new File(downloadPath);
         if (!desc.getParentFile().exists())
         {

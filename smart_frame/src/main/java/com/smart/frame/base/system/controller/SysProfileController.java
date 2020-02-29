@@ -18,7 +18,7 @@ import com.smart.frame.common.utils.ServletUtils;
 import com.smart.frame.common.utils.file.FileUploadUtils;
 import com.smart.frame.framework.aspectj.lang.annotation.Log;
 import com.smart.frame.framework.aspectj.lang.enums.BusinessType;
-import com.smart.frame.framework.config.RuoYiConfig;
+import com.smart.frame.framework.config.SmartConfig;
 import com.smart.frame.framework.security.LoginUser;
 import com.smart.frame.framework.security.service.TokenService;
 import com.smart.frame.framework.web.controller.BaseController;
@@ -94,7 +94,7 @@ public class SysProfileController extends BaseController
         if (!file.isEmpty())
         {
             LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
-            String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file);
+            String avatar = FileUploadUtils.upload(SmartConfig.getAvatarPath(), file);
             if (userService.updateUserAvatar(loginUser.getUsername(), avatar))
             {
                 AjaxResult ajax = AjaxResult.success();
