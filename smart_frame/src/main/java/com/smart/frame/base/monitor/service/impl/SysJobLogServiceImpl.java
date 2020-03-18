@@ -62,9 +62,9 @@ public class SysJobLogServiceImpl implements ISysJobLogService
      * @return 结果
      */
     @Override
-    public int deleteJobLogByIds(String ids)
+    public int deleteJobLogByIds(Long[] ids)
     {
-        return jobLogMapper.deleteJobLogByIds(Convert.toStrArray(ids));
+        return jobLogMapper.deleteJobLogByIds(ids);
     }
 
     /**

@@ -14,7 +14,6 @@ import com.smart.frame.framework.web.page.TableDataInfo;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,19 +26,10 @@ import static com.smart.frame.framework.web.domain.AjaxResult.success;
  */
 @RestController
 @RequestMapping("/monitor/job")
-public class SysJobController extends BaseController
-{
-    private String prefix = "monitor/job";
+public class SysJobController extends BaseController {
 
     @Autowired
     private ISysJobService jobService;
-
-    @PreAuthorize("@ss.hasPermi('monitor:job:view')")
-    @GetMapping()
-    public String job()
-    {
-        return prefix + "/job";
-    }
 
     @PreAuthorize("@ss.hasPermi('monitor:job:list')")
     @GetMapping("/list")
@@ -101,7 +91,7 @@ public class SysJobController extends BaseController
     @Log(title = "新增定时任务", businessType = BusinessType.INSERT)
     @PreAuthorize("@ss.hasPermi('monitor:job:add')")
     @PostMapping("/add")
-    public AjaxResult addSave(@Validated SysJob job) throws SchedulerException, TaskException {
+    public AjaxResult addSave(@Validated @RequestBody SysJob job) throws SchedulerException, TaskException {
         return toAjax(jobService.insertJob(job));
     }
 
@@ -111,7 +101,7 @@ public class SysJobController extends BaseController
     @Log(title = "修改定时任务", businessType = BusinessType.UPDATE)
     @PreAuthorize("@ss.hasPermi('monitor:job:edit')")
     @PostMapping("/edit")
-    public AjaxResult editSave(@Validated SysJob job) throws SchedulerException, TaskException {
+    public AjaxResult editSave(@Validated @RequestBody SysJob job) throws SchedulerException, TaskException {
         return toAjax(jobService.updateJob(job));
     }
 

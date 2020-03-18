@@ -39,7 +39,7 @@ public interface ISysJobLogService
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deleteJobLogByIds(String ids);
+    public int deleteJobLogByIds(Long[] ids);
 
     /**
      * 删除任务日志

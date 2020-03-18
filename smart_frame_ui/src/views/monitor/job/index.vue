@@ -66,6 +66,14 @@
           v-hasPermi="['system:job:remove']"
         >删除</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          icon="el-icon-tickets"
+          size="mini"
+          @click="toLog"
+        >任务日志</el-button>
+      </el-col>
     </el-row>
 
     <el-table border v-loading="loading" :data="jobList" @selection-change="handleSelectionChange">
@@ -215,6 +223,7 @@
 import { listJob, getJob, deleteJob, addJob, updateJob, exportJob, changeJobStatus, runJob, checkCronExpression } from "@/api/monitor/job";
 
 export default {
+  name: "Job",
   data() {
     return {
       // 遮罩层
@@ -292,7 +301,7 @@ export default {
       this.open = false;
       this.reset();
     },
-    // 菜单显示状态字典翻译
+    // 任务分组字典翻译
     jobGroupFormat(row, column) {
       return this.selectDictLabel(this.jobGroupOptions, row.jobGroup);
     },
@@ -454,6 +463,10 @@ export default {
           that.cronFlag = false
         }
       });
+    },
+    /** 跳转任务日志列表 */
+    toLog() {
+      this.$router.push({ path: '/monitor/joblog'})
     }
   }
 };
